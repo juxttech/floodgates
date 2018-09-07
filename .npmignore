@@ -1,0 +1,10 @@
+yarn-error.log
+
+# Keep the source code and helpers out to keep the package light
+src
+tsconfig.json
+tslint.json
+types
+
+# Keep the test reports out to keep the package light
+test-results
