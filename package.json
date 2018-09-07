@@ -1,0 +1,82 @@
+{
+  "name": "floodgates",
+  "version": "0.1.0",
+  "description": "CLI to Help Manage Git Flow and NPM Releases",
+  "main": "lib/index.js",
+  "bin": {
+    "floodgates": "lib/index.js"
+  },
+  "scripts": {
+    "clean": "mkdir -p lib; rm -r lib; mkdir -p test-results; rm -r test-results;",
+    "lint": "tslint --project '.'",
+    "prestart": "npm run build",
+    "start": "node lib/index.js",
+    "prebuild": "npm run clean && npm run lint",
+    "build": "tsc & wait",
+    "pretest": "npm run clean && npm run lint",
+    "test": "jest --ci --reporters=\"jest-junit\" --coverageReporters=\"cobertura\"",
+    "pretest:local": "npm run clean && npm run lint",
+    "test:local": "jest --verbose --watchAll --coverageReporters=\"text\"",
+    "prepublishOnly": "npm run test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juxttech/floodgates.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "npm",
+    "release"
+  ],
+  "author": "Juxtapose Technologies",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juxttech/floodgates/issues"
+  },
+  "homepage": "https://github.com/juxttech/floodgates#readme",
+  "devDependencies": {
+    "@types/command-line-args": "^5.0.0",
+    "@types/command-line-usage": "^5.0.1",
+    "@types/jest": "^23.3.1",
+    "@types/node": "^10.9.4",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.4.2",
+    "command-line-test": "^1.0.10",
+    "jest": "^23.5.0",
+    "jest-junit": "^5.1.0",
+    "ts-jest": "^23.1.4",
+    "tslint": "^5.11.0",
+    "tslint-config-airbnb": "^5.10.0",
+    "typescript": "^3.0.3"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{ts,tsx}",
+      "!**/node_modules/**"
+    ],
+    "coverageDirectory": "./test-results/coverage",
+    "moduleDirectories": [
+      "node_modules"
+    ],
+    "roots": [
+      "<rootDir>/src"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ]
+  },
+  "jest-junit": {
+    "output": "./test-results/unit/junit.xml"
+  },
+  "dependencies": {
+    "command-line-args": "^5.0.2",
+    "command-line-usage": "^5.0.5"
+  }
+}
