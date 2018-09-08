@@ -28,7 +28,6 @@
     // Module Resolution Options
     "moduleResolution": "node",
     "types": [
-      "chalk",
       "command-line-args",
       "jest",
       "node"
