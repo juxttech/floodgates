@@ -22,7 +22,7 @@ describe('cli.ts', () => {
 
       expect(code).toBe(1);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
-      expect(errorSpy).toHaveBeenCalledTimes(0);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
     });
 
     test('should return 0 if "help" is called', async () => {
@@ -36,7 +36,7 @@ describe('cli.ts', () => {
       expect(errorSpy).toHaveBeenCalledTimes(0);
     });
 
-    test('should return 0 if "test" is called', async () => {
+    test('should return 1 if "test" is called', async () => {
       const options: CommandLineOptions = {
         command: 'test',
       };
@@ -44,7 +44,7 @@ describe('cli.ts', () => {
 
       expect(code).toBe(1);
       expect(consoleSpy).toHaveBeenCalledTimes(1);
-      expect(errorSpy).toHaveBeenCalledTimes(0);
+      expect(errorSpy).toHaveBeenCalledTimes(1);
     });
   });
 
