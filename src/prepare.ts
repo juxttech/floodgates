@@ -23,7 +23,7 @@ const prepare = async (options: any) => {
   const formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
 
   // Get the project's package.json and get its version
-  const projectPackage = await util.promisify(fs.readFile)(pkgPath)
+  const pkg = await util.promisify(fs.readFile)(pkgPath)
     .then(
       file => JSON.parse(file.toString()),
       (err: Error) => {
@@ -37,12 +37,12 @@ const prepare = async (options: any) => {
     });
 
   // Have to throw like this for tests
-  if (projectPackage === undefined) {
+  if (pkg === undefined) {
     process.exit(1);
     return;
   }
 
-  let version = projectPackage.version;
+  let version = pkg.version;
 
   // Get all tags from the project's Git repo
   const allTags = await gitHelpers.getAllTags()
@@ -152,8 +152,8 @@ const prepare = async (options: any) => {
   }
 
   // Write the updated package.json and quit
-  projectPackage.version = version;
-  await util.promisify(fs.writeFile)(pkgPath, JSON.stringify(projectPackage, null, 2), 'utf8')
+  pkg.version = version;
+  await util.promisify(fs.writeFile)(pkgPath, `${JSON.stringify(pkg, null, 2)}\n`, 'utf8')
     .then(
       () => {
         info('Your repository has been successfully prepared for release');
