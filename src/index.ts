@@ -12,7 +12,7 @@ yargs
   .usage('Usage: $0 [<args>] [<options>]')
   .scriptName('floodgates')
   .command('prepare', 'create release branch, update package and changelog', {}, prepare)
-  .command('release', 'merge release branch and publish package to NPM and Github', {}, release)
+  .command('release', 'merge release branch and push release tag to Git', {}, release)
   .option('M', {
     alias: 'major',
     desc: 'Prepare a major release (x.0.0)',
