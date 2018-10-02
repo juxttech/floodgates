@@ -9,7 +9,7 @@
 
 ## Installation
 
-1. `npm install -g floodgates` or `yarn global add floodgates`
+1. `npm install -g @juxttech/floodgates` or `yarn global add @juxttech/floodgates`
 
 ## Usage
 
