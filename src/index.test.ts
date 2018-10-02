@@ -1,19 +1,39 @@
+import yargs from 'yargs';
+
 describe('index.ts', () => {
-  let consoleSpy: () => null;
-  let errorSpy: () => null;
-  beforeAll(() => {
-    consoleSpy = jest.spyOn(console, 'info').mockImplementation(() => null);
-    errorSpy = jest.spyOn(console, 'error').mockImplementation(() => null);
-    jest.spyOn(process, 'exit').mockImplementation((number: number) => number);
-  });
+  test('should call each function in the yargs chain', () => {
+    // Prepare Test (Set up Spies and Mocks)
+    let finishedChain = false;
+    const finishChain = () => {
+      finishedChain = true;
+      return;
+    };
 
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
+    // Mock each command in the chain that we use so they don't do anything
+    const mockYargs = {
+      alias: () => mockYargs,
+      argv: finishChain(), // When we hit this the chain finishes
+      command: () => mockYargs,
+      demandCommand: () => mockYargs,
+      help: () => mockYargs,
+      option: () => mockYargs,
+      scriptName: () => mockYargs,
+      version: () => mockYargs,
+    };
 
-  test('should exit with code 1 by default', async () => {
-    await require('./');
-    expect(consoleSpy).toHaveBeenCalledTimes(1);
-    expect(errorSpy).toHaveBeenCalledTimes(1);
+    // Mock usage since we start there
+    const usageSpy = jest.spyOn(yargs, 'usage');
+    usageSpy.mockImplementation(() => mockYargs);
+
+    // Run test
+    require('./');
+
+    // Check output
+    // Make sure our initial "yargs" was called and the chain finishes
+    expect(usageSpy).toHaveBeenCalledTimes(1);
+    expect(finishedChain).toEqual(true);
+
+    // Restore spies
+    usageSpy.mockRestore();
   });
 });
