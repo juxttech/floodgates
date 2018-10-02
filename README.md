@@ -1,6 +1,6 @@
 # Floodgates
 
-> "OPEN THE FLOODGATES!" CLI to Help Manage Git Flow and NPM Releases
+> "OPEN THE FLOODGATES!" CLI to Help Manage Git Flow and Releases
 
 ## Prerequisites
 
@@ -9,15 +9,24 @@
 
 ## Installation
 
-1. `npm install -g floodgates` or `yarn global add floodgates`
+1. `npm install -g @juxttech/floodgates` or `yarn global add @juxttech/floodgates`
 
 ## Usage
 
-```floodgates <command> [options ...]```
+```text
+usage: floodgates [<args>] [<options>]
 
-A full usage guide can be found on Floodgates'
-[documentation](https://developers.juxttech.com/floodgates)
-page on our developer portal.
+Commands:
+  floodgates prepare  create release branch, update package and changelog
+  floodgates release  merge release branch and publish package to NPM and Github
+
+Options:
+  -M, --major    Prepare a major release (x.0.0)                       [boolean]
+  -m, --minor    Prepare a minor release (0.x.0)                       [boolean]
+  -p, --patch    Prepare a patch release (0.0.x)                       [boolean]
+  -h, --help     Show help                                             [boolean]
+  -v, --version  Show version number                                   [boolean]
+```
 
 ## Development
 

@@ -21,14 +21,13 @@
 
     // Additional Checks
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "noUnusedParameters": false,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
 
     // Module Resolution Options
     "moduleResolution": "node",
     "types": [
-      "command-line-args",
       "jest",
       "node"
     ],
@@ -39,7 +38,8 @@
     "inlineSourceMap": false
   },
   "files": [
-    "./types/json.d.ts"
+    "./types/json.d.ts",
+    "./types/promisify-child-process.d.ts"
   ],
   "include": [
     "src/**/*.ts"
