@@ -76,3 +76,4 @@ typings/
 lib
 test-results
 .floodgates
+.DS_Store
