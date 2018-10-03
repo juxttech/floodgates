@@ -26,7 +26,9 @@ const getAllTags = async () => {
     .catch((err: Error) => {
       throw err;
     });
-  return stdout.split(/\r?\n/g).pop();
+  const tagsArray = stdout.split(/\r?\n/g);
+  tagsArray.pop();
+  return tagsArray;
 };
 
 const merge = async (version: string) => {
@@ -58,7 +60,7 @@ const push = async (tags = false) => {
 };
 
 const tag = async (version: string) => {
-  const { stdout } = await exec(`git tag -a ${version} master`)
+  const { stdout } = await exec(`git tag -a ${version} master -m Version ${version}`)
     .then(
       data => data,
       (err: Error) => {
