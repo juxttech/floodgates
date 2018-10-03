@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.1.2] - 2018-9-2
+
+### Changed
+
+- Fixed creating tags not working as intended
+
 ## [0.1.1] - 2018-9-2
 
 ### Added
