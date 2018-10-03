@@ -47,7 +47,7 @@ describe('gitHelpers.ts', () => {
           .then(res => res)
           .catch(err => err.message);
 
-        expect(allTagsData).toEqual('bar');
+        expect(allTagsData[0]).toEqual('foo');
 
         execSpy.mockRestore();
       });

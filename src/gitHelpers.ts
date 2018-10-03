@@ -26,7 +26,9 @@ const getAllTags = async () => {
     .catch((err: Error) => {
       throw err;
     });
-  return stdout.split(/\r?\n/g).pop();
+  const tagsArray = stdout.split(/\r?\n/g);
+  tagsArray.pop();
+  return tagsArray;
 };
 
 const merge = async (version: string) => {
