@@ -60,7 +60,7 @@ const push = async (tags = false) => {
 };
 
 const tag = async (version: string) => {
-  const { stdout } = await exec(`git tag -a ${version} master -m Version ${version}`)
+  const { stdout } = await exec(`git tag -a ${version} master -m "Version ${version}"`)
     .then(
       data => data,
       (err: Error) => {
