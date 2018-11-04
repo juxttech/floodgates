@@ -8,6 +8,25 @@ import { error, info } from './utils';
 export const pkgPath = path.join(process.cwd(), 'package.json');
 
 const release = async () => {
+  const currentBranch = await gitHelpers.getCurrentBranch()
+    .then(
+      res => res,
+      (err: Error) => {
+        throw err;
+      },
+    )
+    .catch((err: Error) => {
+      error('An unexpected error has occurred while fetching your repository\'s current branch');
+      error(err.message);
+      return;
+    });
+
+  if (!currentBranch || !currentBranch.includes('release/')) {
+    error('A release can only be run from a release branch');
+    process.exit(1);
+    return;
+  }
+
   const pkgVersion = await util.promisify(fs.readFile)(pkgPath)
     .then(
       (res: Buffer) => JSON.parse(res.toString()).version,

@@ -31,6 +31,22 @@ const getAllTags = async () => {
   return tagsArray;
 };
 
+const getCurrentBranch = async () => {
+  const { stdout } = await exec('git branch | grep \\* | cut -d \' \' -f2')
+  .then(
+    data => data,
+    (err: Error) => {
+      throw err;
+    },
+  )
+  .catch((err: Error) => {
+    throw err;
+  });
+  const currentBranchArray = stdout.split(/\r?\n/g);
+  currentBranchArray.pop();
+  return currentBranchArray[0];
+};
+
 const merge = async (version: string) => {
   const { stdout } = await exec(`git merge --no-ff release/${version}`)
     .then(
@@ -73,4 +89,4 @@ const tag = async (version: string) => {
   return stdout;
 };
 
-export default { checkout, getAllTags, merge, push, tag };
+export default { checkout, getAllTags, getCurrentBranch, merge, push, tag };

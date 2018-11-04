@@ -3,6 +3,7 @@
 import yargs from 'yargs';
 import * as pkg from '../package.json';
 
+import create from './create';
 import prepare from './prepare';
 import release from './release';
 
@@ -11,6 +12,7 @@ const VERSION = pkg.version;
 yargs
   .usage('Usage: $0 [<args>] [<options>]')
   .scriptName('floodgates')
+  .command('create', 'create a develop branch', {}, create)
   .command('prepare', 'create release branch, update package and changelog', {}, prepare)
   .command('release', 'merge release branch and push release tag to Git', {}, release)
   .option('M', {

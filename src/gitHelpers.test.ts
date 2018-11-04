@@ -68,6 +68,38 @@ describe('gitHelpers.ts', () => {
       });
     });
 
+    describe('getCurrentBranch', () => {
+      test('should return stdout from command if command successful', async () => {
+        const execSpy = jest.spyOn(childProcess, 'exec');
+        execSpy.mockImplementation(async () => {
+          return { stdout: 'foo\n' };
+        });
+
+        const currentbranchData = await gitHelpers.getCurrentBranch()
+          .then(res => res)
+          .catch(err => err.message);
+
+        expect(currentbranchData).toEqual('foo');
+
+        execSpy.mockRestore();
+      });
+
+      test('should return error from command if command fails', async () => {
+        const execSpy = jest.spyOn(childProcess, 'exec');
+        execSpy.mockImplementation(async () => {
+          throw new Error('Command failed');
+        });
+
+        const allTagsData = await gitHelpers.getCurrentBranch()
+          .then(res => res)
+          .catch(err => err.message);
+
+        expect(allTagsData).toEqual('Command failed');
+
+        execSpy.mockRestore();
+      });
+    });
+
     describe('merge', () => {
       test('should return stdout from command if command successful', async () => {
         const execSpy = jest.spyOn(childProcess, 'exec');
