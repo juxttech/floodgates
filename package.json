@@ -13,9 +13,9 @@
     "start": "node lib/index.js",
     "prebuild": "npm run clean && npm run lint",
     "build": "tsc & wait",
-    "pretest": "npm run clean && npm run lint",
+    "pretest": "npm run build",
     "test": "jest --ci --reporters=\"jest-junit\" --coverageReporters=\"cobertura\"",
-    "pretest:local": "npm run clean && npm run lint",
+    "pretest:local": "npm run build",
     "test:local": "jest --watchAll --coverageReporters=\"text\"",
     "prepublishOnly": "npm run test"
   },
