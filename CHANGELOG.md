@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.2.2] - 2018-11-4
+
+### Changed
+
+- Package.json updated so lib is included in a packed npm package
+
 ## [0.2.1] - 2018-11-3
 
 ### Changed
