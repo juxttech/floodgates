@@ -13,7 +13,7 @@ export const pkgPath = path.join(process.cwd(), 'package.json');
 
 const prepare = async (options: any) => {
   const date = new Date();
-  const formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
+  const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 
   const currentBranch = await gitHelpers.getCurrentBranch()
     .then(

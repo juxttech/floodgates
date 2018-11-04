@@ -1,6 +1,6 @@
 {
   "name": "floodgates",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "CLI to Help Manage Git Flow and Releases",
   "main": "lib/index.js",
   "bin": {
