@@ -61,8 +61,9 @@ const merge = async (version: string) => {
   return stdout;
 };
 
-const push = async (tags = false) => {
-  const { stdout } = await exec(`git push${tags ? ' --tags' : ''}`)
+const push = async (tags = false, needsUpstream = false) => {
+  const upstream = needsUpstream ? ' --set-upstream origin' : '';
+  const { stdout } = await exec(`git push${upstream}${tags ? ' --tags' : ''}`)
     .then(
       data => data,
       (err: Error) => {

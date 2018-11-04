@@ -139,7 +139,7 @@ describe('gitHelpers.ts', () => {
           return { stdout: 'bar' };
         });
 
-        const pushData = await gitHelpers.push()
+        const pushData = await gitHelpers.push(true, true)
           .then(res => res)
           .catch(err => err.message);
 
@@ -154,7 +154,7 @@ describe('gitHelpers.ts', () => {
           throw new Error('Command failed');
         });
 
-        const pushData = await gitHelpers.push(true)
+        const pushData = await gitHelpers.push()
           .then(res => res)
           .catch(err => err.message);
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1] - 2018-11-3
+
+### Changed
+
+- Changed the way the push function works to support branches that don't exist on the origin repository
+- Changed the checkout command to specify that this is not a release branch
+
 ## [0.2.0] - 2018-11-3
 
 ### Added
