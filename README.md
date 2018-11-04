@@ -17,6 +17,7 @@
 usage: floodgates [<args>] [<options>]
 
 Commands:
+  floodgates create   create a develop branch
   floodgates prepare  create release branch, update package and changelog
   floodgates release  merge release branch and publish package to NPM and Github
 

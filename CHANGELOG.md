@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.0] - 2018-11-3
+
+### Added
+
+- Added a command to create a develop branch
+
+### Changed
+
+- Fixed the wrong date showing up on changelogs
+- Forced prepare command to only allow execution on develop branch
+- Forced release command to only allow execution on a valid release branch
+
 ## [0.1.2] - 2018-9-2
 
 ### Changed

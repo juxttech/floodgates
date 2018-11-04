@@ -12,15 +12,27 @@ export const changelogPath = path.join(process.cwd(), 'CHANGELOG.md');
 export const pkgPath = path.join(process.cwd(), 'package.json');
 
 const prepare = async (options: any) => {
-  const { major, minor, patch } = options;
-  if (!major && !minor && !patch) {
-    error('You need to specify what type of release you\'re doing before we can prepare');
+  const date = new Date();
+  const formattedDate = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+  const currentBranch = await gitHelpers.getCurrentBranch()
+    .then(
+      res => res,
+      (err: Error) => {
+        throw err;
+      },
+    )
+    .catch((err: Error) => {
+      error('An unexpected error has occurred while fetching your repository\'s current branch');
+      error(err.message);
+      return;
+    });
+
+  if (currentBranch !== 'develop') {
+    error('A release can only be prepared from the develop branch');
     process.exit(1);
     return;
   }
-
-  const date = new Date();
-  const formattedDate = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}`;
 
   // Get the project's package.json and get its version
   const pkg = await util.promisify(fs.readFile)(pkgPath)
@@ -66,6 +78,13 @@ const prepare = async (options: any) => {
 
   // Override whatever the package.json says if Git returns tags
   if (allTags.length > 0) {
+    const { major, minor, patch } = options;
+    if (!major && !minor && !patch) {
+      error('You need to specify what type of release you\'re doing before we can prepare');
+      process.exit(1);
+      return;
+    }
+
     let tempVersion = allTags[0].split('refs/tags/')[1];
     // We only care about command options if it's not an initial release
     if (major) {

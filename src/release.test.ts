@@ -19,7 +19,24 @@ describe('release.ts', () => {
       version: '0.1.0',
     }), 'utf8');
 
+    test('should exit with code 1 if current branch is not a release branch', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => {
+        throw new Error('getCurrentBranch had an error');
+      });
+
+      await release();
+
+      expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
+
+      getCurrentBranchSpy.mockRestore();
+    });
+
     test('should exit with code 1 if reading package.json fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation(() => {
@@ -29,12 +46,17 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
     });
 
     test('should exit with code 1 if pulling master fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -49,14 +71,19 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
     });
 
     test('should exit with code 1 if merging release with develop fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -74,16 +101,21 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
       expect(mergeSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
     });
 
     test('should exit with code 1 if pushing master fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -104,11 +136,13 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
       expect(mergeSpy).toHaveBeenCalledTimes(1);
       expect(pushSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -116,6 +150,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 1 if pulling master fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -138,11 +175,13 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(1);
       expect(pushSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -150,6 +189,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 1 if merging release with master fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -172,11 +214,13 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(2);
       expect(pushSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -184,6 +228,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 1 if pushing master fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -206,11 +253,13 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(2);
       expect(pushSpy).toHaveBeenCalledTimes(2);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -218,6 +267,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 1 if creating tag fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -241,12 +293,14 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(2);
       expect(pushSpy).toHaveBeenCalledTimes(2);
       expect(tagSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -255,6 +309,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 1 if pushing tags fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -281,12 +338,14 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(2);
       expect(pushSpy).toHaveBeenCalledTimes(3);
       expect(tagSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
@@ -295,6 +354,9 @@ describe('release.ts', () => {
     });
 
     test('should exit with code 0 if running a release is successful', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'release/foo');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementation((filePath: string, callback) => {
@@ -316,12 +378,14 @@ describe('release.ts', () => {
       await release();
 
       expect(exitSpy).toHaveBeenCalledWith(0);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(2);
       expect(mergeSpy).toHaveBeenCalledTimes(2);
       expect(pushSpy).toHaveBeenCalledTimes(3);
       expect(tagSpy).toHaveBeenCalledTimes(1);
 
+      getCurrentBranchSpy.mockRestore();
       readFileSpy.mockRestore();
       checkoutSpy.mockRestore();
       mergeSpy.mockRestore();
