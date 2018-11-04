@@ -19,25 +19,41 @@ describe('prepare.ts', () => {
       version: '0.1.0',
     }), 'utf8');
 
-    test('should exit with code 1 if no release type is specified', async () => {
+    test('should exit with code 1 if current branch is not "develop"', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => {
+        throw new Error('getCurrentBranch had an error');
+      });
+
       await prepare({});
+
       expect(exitSpy).toHaveBeenCalledWith(1);
+
+      getCurrentBranchSpy.mockRestore();
     });
 
     test('should exit with code 1 if reading package.json throws an error', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy.mockImplementation(() => {
         throw new Error('readFile had an error');
       });
 
-      await prepare({ major: true, minor: true, patch: true });
+      await prepare({});
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
 
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
     });
 
     test('should exit with code 1 if fetching repository tags fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy.mockImplementation((filePath: string, callback) => {
         return callback(null, mockPkg);
@@ -48,14 +64,43 @@ describe('prepare.ts', () => {
         throw new Error('getAllTags had an error');
       });
 
-      await prepare({ major: true, minor: true, patch: true });
+      await prepare({});
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
+      allTagsSpy.mockRestore();
+    });
+
+    test('should exit with code 1 if tags exist but no release type is specified', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
+      const readFileSpy = jest.spyOn(fs, 'readFile');
+      readFileSpy.mockImplementation((filePath: string, callback) => {
+        return callback(null, mockPkg);
+      });
+
+      const allTagsSpy = jest.spyOn(gitHelpers, 'getAllTags');
+      allTagsSpy.mockImplementation(async () => ['refs/tags/0.2.0']);
+
+      await prepare({});
+
+      expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
+      expect(readFileSpy).toHaveBeenCalledTimes(1);
+      expect(allTagsSpy).toHaveBeenCalledTimes(1);
+
+      readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       allTagsSpy.mockRestore();
     });
 
     test('should exit with code 1 if checking out release branch fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy.mockImplementation((filePath: string, callback) => {
         return callback(null, mockPkg);
@@ -72,14 +117,21 @@ describe('prepare.ts', () => {
       await prepare({ major: true, minor: true, patch: true });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
+      expect(readFileSpy).toHaveBeenCalledTimes(1);
+      expect(allTagsSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
 
       readFileSpy.mockRestore();
       allTagsSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       checkoutSpy.mockRestore();
     });
 
     test('should exit with code 1 if reading the changelog fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementationOnce((filePath: string, callback) => {
@@ -104,18 +156,23 @@ describe('prepare.ts', () => {
       await prepare({ major: false, minor: false, patch: true });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(2);
       expect(allTagsSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
       expect(accessSpy).toHaveBeenCalledTimes(1);
 
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       allTagsSpy.mockRestore();
       checkoutSpy.mockRestore();
       accessSpy.mockRestore();
     });
 
     test('should exit with code 1 if writing the changelog fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementationOnce((filePath: string, callback) => {
@@ -146,6 +203,7 @@ describe('prepare.ts', () => {
       await prepare({ major: true, minor: true, patch: false });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(2);
       expect(allTagsSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
@@ -153,6 +211,7 @@ describe('prepare.ts', () => {
       expect(writeFileSpy).toHaveBeenCalledTimes(1);
 
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       allTagsSpy.mockRestore();
       checkoutSpy.mockRestore();
       accessSpy.mockRestore();
@@ -160,6 +219,9 @@ describe('prepare.ts', () => {
     });
 
     test('should exit with code 1 if writing the package.json fails', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementationOnce((filePath: string, callback) => {
@@ -193,6 +255,7 @@ describe('prepare.ts', () => {
       await prepare({ major: true, minor: true, patch: true });
 
       expect(exitSpy).toHaveBeenCalledWith(1);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(2);
       expect(allTagsSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
@@ -200,6 +263,7 @@ describe('prepare.ts', () => {
       expect(writeFileSpy).toHaveBeenCalledTimes(2);
 
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       allTagsSpy.mockRestore();
       checkoutSpy.mockRestore();
       accessSpy.mockRestore();
@@ -207,6 +271,9 @@ describe('prepare.ts', () => {
     });
 
     test('should exit with code 0 if preparing a release is successful', async () => {
+      const getCurrentBranchSpy = jest.spyOn(gitHelpers, 'getCurrentBranch');
+      getCurrentBranchSpy.mockImplementation(async () => 'develop');
+
       const readFileSpy = jest.spyOn(fs, 'readFile');
       readFileSpy
         .mockImplementationOnce((filePath: string, callback) => {
@@ -240,6 +307,7 @@ describe('prepare.ts', () => {
       await prepare({ major: true, minor: true, patch: true });
 
       expect(exitSpy).toHaveBeenCalledWith(0);
+      expect(getCurrentBranchSpy).toHaveBeenCalledTimes(1);
       expect(readFileSpy).toHaveBeenCalledTimes(1); // Should be called once if file doesn't exist
       expect(allTagsSpy).toHaveBeenCalledTimes(1);
       expect(checkoutSpy).toHaveBeenCalledTimes(1);
@@ -247,6 +315,7 @@ describe('prepare.ts', () => {
       expect(writeFileSpy).toHaveBeenCalledTimes(2);
 
       readFileSpy.mockRestore();
+      getCurrentBranchSpy.mockRestore();
       allTagsSpy.mockRestore();
       checkoutSpy.mockRestore();
       accessSpy.mockRestore();
