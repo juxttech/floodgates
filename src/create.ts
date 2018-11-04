@@ -25,7 +25,7 @@ const release = async () => {
     return;
   }
 
-  const checkout = await gitHelpers.checkout('develop')
+  const checkout = await gitHelpers.checkout('develop', false)
     .then(
       () => null,
       (err) => {
@@ -43,7 +43,7 @@ const release = async () => {
     return;
   }
 
-  await gitHelpers.push(false)
+  await gitHelpers.push(false, true)
     .then(
       () => {
         info('New Project Successfully Set Up');
