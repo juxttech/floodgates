@@ -1,3 +1,5 @@
+> **DEPRECATED** This package has been deprecated, and will receive no further updates or support from Kienle Holdings.
+
 # Floodgates
 
 > "OPEN THE FLOODGATES!" CLI to Help Manage Git Flow and Releases
